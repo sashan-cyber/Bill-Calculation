@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧾 Super Market Bill Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            background: linear-gradient(90deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.3rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.85;
+            font-weight: 300;
+        }
+
+        .calculator-icon {
+            color: #4CAF50;
+            animation: subtleFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes subtleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .main-container {
+            display: flex;
+            min-height: 550px;
+        }
+
+        .form-section {
+            flex: 1.2;
+            padding: 30px;
+            background: #f9fafc;
+            border-right: 1px solid #eaeaea;
+        }
+
+        .bill-section {
+            flex: 1;
+            padding: 30px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid #eaeaea;
+            }
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0e6ef;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        label:hover {
+            color: #3498db;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #d1d9e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            color: #333;
+            transition: all 0.2s ease;
+        }
+
+        .input-field:hover {
+            border-color: #a8c6df;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.08);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .items-header {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1.5fr 1.5fr 0.5fr;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 0 8px;
+            font-weight: 600;
+            color: #4a6491;
+            font-size: 0.9rem;
+        }
+
+        .item-row {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1.5fr 1.5fr 0.5fr;
+            gap: 12px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .add-item-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            width: 100%;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .add-item-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        }
+
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+
+        .calculate-btn:hover {
+            background: linear-gradient(90deg, #2980b9 0%, #3498db 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.25);
+        }
+
+        /* Bill Display Styles */
+        .bill-details {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px solid #eaeaea;
+        }
+
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        .bill-table th {
+            background: #4a6491;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .bill-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eaeaea;
+            color: #333;
+        }
+
+        .bill-table tr:hover {
+            background: rgba(74, 100, 145, 0.03);
+        }
+
+        .bill-summary {
+            margin-top: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            border: 1px solid #eaeaea;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e0e6ef;
+            font-size: 0.95rem;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.05rem;
+        }
+
+        .total-amount {
+            background: linear-gradient(90deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 22px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .total-amount h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .total-amount .amount {
+            font-size: 2.8rem;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            background: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #6c7b7d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(127, 140, 141, 0.2);
+        }
+
+        .tax-options {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tax-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            border: 1px solid #d1d9e6;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            transition: all 0.2s ease;
+        }
+
+        .tax-btn:hover {
+            border-color: #3498db;
+            background: #f0f7ff;
+        }
+
+        .tax-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .preview-title {
+            text-align: center;
+            color: #4a6491;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Real-time calculation preview */
+        .real-time-preview {
+            position: sticky;
+            top: 20px;
+        }
+
+        /* Subtle animations */
+        .subtle-pulse {
+            animation: subtlePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.95; }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Focus states for accessibility */
+        .input-field:focus, 
+        .calculate-btn:focus, 
+        .back-btn:focus,
+        .add-item-btn:focus,
+        .tax-btn:focus {
+            outline: 2px solid rgba(52, 152, 219, 0.3);
+            outline-offset: 2px;
+        }
+
+        /* Disabled state */
+        .remove-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .remove-btn:disabled:hover {
+            transform: none;
+            background: #bdc3c7;
+        }
+
+        /* Placeholder styling */
+        .input-field::placeholder {
+            color: #95a5a6;
+            opacity: 0.7;
+        }
+
+        /* Number input arrows */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            opacity: 0.5;
+        }
+
+        /* Selection color */
+        ::selection {
+            background: rgba(52, 152, 219, 0.2);
+            color: #2c3e50;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>
+                <i class="fas fa-calculator calculator-icon"></i>
+                  Bill Calculator
+            </h1>
+            <p>Calculate your grocery bills with accuracy</p>
+        </div>
+
+        <div class="main-container">
+            <!-- Left Side: Input Form -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-shopping-basket"></i>
+                    Shopping Items
+                </div>
+
+                <form action="calculate.php" method="POST" id="billForm">
+                    
+                    <!-- Customer Information -->
+                    <div class="input-group">
+                        <label for="customer_name">
+                            <i class="fas fa-user"></i> Customer Name
+                        </label>
+                        <input type="text" 
+                               id="customer_name" 
+                               name="customer_name" 
+                               class="input-field"
+                               placeholder="Enter customer name"
+                               required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="date">
+                            <i class="fas fa-calendar-alt"></i> Date
+                        </label>
+                        <input type="date" 
+                               id="date" 
+                               name="date" 
+                               class="input-field"
+                               value="<?php echo date('Y-m-d'); ?>"
+                               required>
+                    </div>
+
+                    <!-- Items Section with Headers -->
+                    <div class="items-header">
+                        <span>Item Name</span>
+                        <span>Qty</span>
+                        <span>Price (₹)</span>
+                        <span>Total (₹)</span>
+                        <span></span>
+                    </div>
+
+                    <div id="itemsContainer">
+                        <!-- Default 3 items -->
+                        <div class="item-row">
+                            <input type="text" 
+                                   name="items[0][name]" 
+                                   class="input-field" 
+                                   placeholder="e.g., Rice (1kg)"
+                                   required>
+                            <input type="number" 
+                                   name="items[0][quantity]" 
+                                   class="input-field" 
+                                   min="1" 
+                                   value="1"
+                                   oninput="calculateRowTotal(0)"
+                                   required>
+                            <input type="number" 
+                                   name="items[0][price]" 
+                                   class="input-field" 
+                                   min="0" 
+                                   step="0.01"
+                                   placeholder="0.00"
+                                   oninput="calculateRowTotal(0)"
+                                   required>
+                            <input type="text" 
+                                   name="items[0][total]" 
+                                   class="input-field total-display" 
+                                   placeholder="0.00"
+                                   readonly>
+                            <button type="button" class="remove-btn remove-item" disabled>
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div class="item-row">
+                            <input type="text" 
+                                   name="items[1][name]" 
+                                   class="input-field" 
+                                   placeholder="e.g., Sugar (1kg)"
+                                   required>
+                            <input type="number" 
+                                   name="items[1][quantity]" 
+                                   class="input-field" 
+                                   min="1" 
+                                   value="1"
+                                   oninput="calculateRowTotal(1)"
+                                   required>
+                            <input type="number" 
+                                   name="items[1][price]" 
+                                   class="input-field" 
+                                   min="0" 
+                                   step="0.01"
+                                   placeholder="0.00"
+                                   oninput="calculateRowTotal(1)"
+                                   required>
+                            <input type="text" 
+                                   name="items[1][total]" 
+                                   class="input-field total-display" 
+                                   placeholder="0.00"
+                                   readonly>
+                            <button type="button" class="remove-btn remove-item" onclick="removeItem(1)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div class="item-row">
+                            <input type="text" 
+                                   name="items[2][name]" 
+                                   class="input-field" 
+                                   placeholder="e.g., Milk (1L)"
+                                   required>
+                            <input type="number" 
+                                   name="items[2][quantity]" 
+                                   class="input-field" 
+                                   min="1" 
+                                   value="1"
+                                   oninput="calculateRowTotal(2)"
+                                   required>
+                            <input type="number" 
+                                   name="items[2][price]" 
+                                   class="input-field" 
+                                   min="0" 
+                                   step="0.01"
+                                   placeholder="0.00"
+                                   oninput="calculateRowTotal(2)"
+                                   required>
+                            <input type="text" 
+                                   name="items[2][total]" 
+                                   class="input-field total-display" 
+                                   placeholder="0.00"
+                                   readonly>
+                            <button type="button" class="remove-btn remove-item" onclick="removeItem(2)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Add More Items Button -->
+                    <button type="button" class="add-item-btn" id="addItemBtn">
+                        <i class="fas fa-plus-circle"></i>
+                        Add More Items
+                    </button>
+
+                    <!-- Tax Options -->
+                    <div class="input-group">
+                        <label><i class="fas fa-percentage"></i> GST Tax Rate</label>
+                        <div class="tax-options">
+                            <label class="tax-btn active">
+                                <input type="radio" name="tax_rate" value="0" checked> 0% (No Tax)
+                            </label>
+                            <label class="tax-btn">
+                                <input type="radio" name="tax_rate" value="5"> 5% GST
+                            </label>
+                            <label class="tax-btn">
+                                <input type="radio" name="tax_rate" value="12"> 12% GST
+                            </label>
+                            <label class="tax-btn">
+                                <input type="radio" name="tax_rate" value="18"> 18% GST
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Discount -->
+                    <div class="input-group">
+                        <label for="discount">
+                            <i class="fas fa-tag"></i> Discount (%)
+                        </label>
+                        <input type="number" 
+                               id="discount" 
+                               name="discount" 
+                               class="input-field"
+                               min="0" 
+                               max="100" 
+                               value="0"
+                               placeholder="Enter discount percentage">
+                    </div>
+
+                    <!-- Calculate Button -->
+                    <button type="submit" class="calculate-btn">
+                        <i class="fas fa-calculator"></i>
+                        Calculate Total Bill
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Side: Bill Display -->
+            <div class="bill-section">
+                <div class="section-title">
+                    <i class="fas fa-receipt"></i>
+                    Bill Summary
+                </div>
+
+                <div class="real-time-preview">
+                    <!-- Real-time Bill Preview -->
+                    <div class="bill-details" id="billPreview">
+                        <h3 class="preview-title">Live Calculation Preview</h3>
+                        
+                        <table class="bill-table" id="previewTable">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="previewItems">
+                                <!-- Items will be added dynamically -->
+                            </tbody>
+                        </table>
+
+                        <div class="bill-summary">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span id="previewSubtotal">₹0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>GST (0%):</span>
+                                <span id="previewTax">₹0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Discount (0%):</span>
+                                <span id="previewDiscount">₹0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Grand Total:</span>
+                                <span id="previewGrandTotal">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Amount Display -->
+                    <div class="total-amount subtle-pulse">
+                        <h3>TOTAL AMOUNT</h3>
+                        <div class="amount" id="totalAmount">₹0.00</div>
+                    </div>
+
+                    <!-- Back Button -->
+                    <a href="index.html">
+                        <button class="back-btn">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Calculator
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let itemCount = 3;
+        
+        // Calculate row total
+        function calculateRowTotal(index) {
+            const row = document.querySelectorAll('.item-row')[index];
+            if (!row) return;
+            
+            const quantity = parseFloat(row.querySelector('input[name="items[' + index + '][quantity]"]').value) || 0;
+            const price = parseFloat(row.querySelector('input[name="items[' + index + '][price]"]').value) || 0;
+            const total = quantity * price;
+            
+            row.querySelector('input[name="items[' + index + '][total]"]').value = total.toFixed(2);
+            updatePreview();
+        }
+        
+        // Add new item row
+        document.getElementById('addItemBtn').addEventListener('click', function() {
+            const container = document.getElementById('itemsContainer');
+            const newItem = document.createElement('div');
+            newItem.className = 'item-row';
+            newItem.innerHTML = `
+                <input type="text" 
+                       name="items[${itemCount}][name]" 
+                       class="input-field" 
+                       placeholder="New item"
+                       required>
+                <input type="number" 
+                       name="items[${itemCount}][quantity]" 
+                       class="input-field" 
+                       min="1" 
+                       value="1"
+                       oninput="calculateRowTotal(${itemCount})"
+                       required>
+                <input type="number" 
+                       name="items[${itemCount}][price]" 
+                       class="input-field" 
+                       min="0" 
+                       step="0.01"
+                       placeholder="0.00"
+                       oninput="calculateRowTotal(${itemCount})"
+                       required>
+                <input type="text" 
+                       name="items[${itemCount}][total]" 
+                       class="input-field total-display" 
+                       placeholder="0.00"
+                       readonly>
+                <button type="button" class="remove-btn remove-item" onclick="removeItem(${itemCount})">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(newItem);
+            itemCount++;
+            updatePreview();
+        });
+        
+        // Remove item
+        function removeItem(index) {
+            const rows = document.querySelectorAll('.item-row');
+            if (rows.length > 1) {
+                rows[index].remove();
+                reindexItems();
+                updatePreview();
+            }
+        }
+        
+        // Re-index items after removal
+        function reindexItems() {
+            const rows = document.querySelectorAll('.item-row');
+            rows.forEach((row, index) => {
+                row.querySelector('input[name^="items"]').name = `items[${index}][name]`;
+                row.querySelector('input[type="number"]:nth-child(2)').name = `items[${index}][quantity]`;
+                row.querySelector('input[type="number"]:nth-child(3)').name = `items[${index}][price]`;
+                row.querySelector('.total-display').name = `items[${index}][total]`;
+                
+                row.querySelector('input[name^="items[' + index + '][quantity]"]').setAttribute('oninput', `calculateRowTotal(${index})`);
+                row.querySelector('input[name^="items[' + index + '][price]"]').setAttribute('oninput', `calculateRowTotal(${index})`);
+                
+                const removeBtn = row.querySelector('.remove-item');
+                removeBtn.setAttribute('onclick', `removeItem(${index})`);
+                removeBtn.disabled = false;
+                
+                if (index === 0) {
+                    removeBtn.disabled = true;
+                    removeBtn.style.opacity = '0.5';
+                    removeBtn.style.cursor = 'not-allowed';
+                }
+            });
+            itemCount = rows.length;
+        }
+        
+        // Update real-time preview
+        function updatePreview() {
+            let subtotal = 0;
+            const previewItems = document.getElementById('previewItems');
+            previewItems.innerHTML = '';
+            
+            const rows = document.querySelectorAll('.item-row');
+            rows.forEach((row, index) => {
+                const name = row.querySelector('input[name^="items[' + index + '][name]"]').value || 'Item ' + (index + 1);
+                const quantity = parseFloat(row.querySelector('input[name^="items[' + index + '][quantity]"]').value) || 0;
+                const price = parseFloat(row.querySelector('input[name^="items[' + index + '][price]"]').value) || 0;
+                const total = quantity * price;
+                
+                if (name && quantity > 0 && price > 0) {
+                    subtotal += total;
+                    
+                    const rowHTML = `
+                        <tr>
+                            <td>${name}</td>
+                            <td>${quantity}</td>
+                            <td>₹${price.toFixed(2)}</td>
+                            <td>₹${total.toFixed(2)}</td>
+                        </tr>
+                    `;
+                    previewItems.innerHTML += rowHTML;
+                }
+            });
+            
+            const taxRate = parseFloat(document.querySelector('input[name="tax_rate"]:checked').value) || 0;
+            const discountRate = parseFloat(document.getElementById('discount').value) || 0;
+            
+            const taxAmount = (subtotal * taxRate) / 100;
+            const discountAmount = (subtotal * discountRate) / 100;
+            const grandTotal = subtotal + taxAmount - discountAmount;
+            
+            document.getElementById('previewSubtotal').textContent = '₹' + subtotal.toFixed(2);
+            document.getElementById('previewTax').textContent = '₹' + taxAmount.toFixed(2);
+            document.getElementById('previewDiscount').textContent = '-₹' + discountAmount.toFixed(2);
+            document.getElementById('previewGrandTotal').textContent = '₹' + grandTotal.toFixed(2);
+            document.getElementById('totalAmount').textContent = '₹' + grandTotal.toFixed(2);
+            
+            document.getElementById('previewTax').previousElementSibling.textContent = `GST (${taxRate}%):`;
+            document.getElementById('previewDiscount').previousElementSibling.textContent = `Discount (${discountRate}%):`;
+        }
+        
+        // Tax button selection
+        document.querySelectorAll('.tax-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tax-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                this.querySelector('input').checked = true;
+                updatePreview();
+            });
+        });
+        
+        // Update preview on discount change
+        document.getElementById('discount').addEventListener('input', updatePreview);
+        
+        // Form validation
+        document.getElementById('billForm').addEventListener('submit', function(e) {
+            let isValid = true;
+            const rows = document.querySelectorAll('.item-row');
+            
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll('input[required]');
+                inputs.forEach(input => {
+                    if (!input.value.trim()) {
+                        isValid = false;
+                        input.style.borderColor = '#e74c3c';
+                        input.style.boxShadow = '0 0 0 2px rgba(231, 76, 60, 0.1)';
+                    } else {
+                        input.style.borderColor = '#d1d9e6';
+                        input.style.boxShadow = 'none';
+                    }
+                });
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill all item details before calculating!');
+            }
+        });
+        
+        // Update date to today
+        document.getElementById('date').valueAsDate = new Date();
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.item-row:first-child .remove-item').disabled = true;
+            document.querySelector('.item-row:first-child .remove-item').style.opacity = '0.5';
+            document.querySelector('.item-row:first-child .remove-item').style.cursor = 'not-allowed';
+            
+            for (let i = 0; i < itemCount; i++) {
+                calculateRowTotal(i);
+            }
+            
+            updatePreview();
+            setTimeout(updatePreview, 100);
+        });
+    </script>
+</body>
+</html>
